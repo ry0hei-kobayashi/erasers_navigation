@@ -10,16 +10,12 @@ services:
     environment:
       DISPLAY: $DISPLAY
       XDG_RUNTIME_DIR: $XDG_RUNTIME_DIR
-      ROS_IP: $ROS_IP
-      ROS_MASTER_URI: $ROS_MASTER_URI
-    working_dir: /catkin_ws
+      ROS_HOSTNAME: 192.168.0.10
+      ROS_MASTER_URI: http://192.168.0.2:11311
+      #ROS_IP: $ROS_IP
+      #ROS_MASTER_URI: $ROS_MASTER_URI
     network_mode: host
-      #deploy:
-      #  resources:
-      #    reservations:
-      #      devices:
-      #        - driver: nvidia
-      #          count: 1
-      #          capabilities: [gpu]
+    working_dir: /catkin_ws
 
-    command: roslaunch navigation_start navigation_cartographer.launch
+    command: roslaunch cartographer_toyota_hsr hsr_2d.launch
+    #command:  /run.sh
