@@ -1,0 +1,25 @@
+version: '3'
+services:
+  erasers_navigation:
+    image: erasers_navigation_docker:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+     - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      DISPLAY: $DISPLAY
+      XDG_RUNTIME_DIR: $XDG_RUNTIME_DIR
+      ROS_IP: $ROS_IP
+      ROS_MASTER_URI: $ROS_MASTER_URI
+    working_dir: /catkin_ws
+    network_mode: host
+      #deploy:
+      #  resources:
+      #    reservations:
+      #      devices:
+      #        - driver: nvidia
+      #          count: 1
+      #          capabilities: [gpu]
+
+    command: roslaunch navigation_start navigation_cartographer.launch
