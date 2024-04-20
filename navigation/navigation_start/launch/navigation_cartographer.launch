@@ -111,7 +111,7 @@
     
     <param name="cloud_downsampling" value="$(arg cloud_downsampling)"/>
     
-    <param name="inflation_radius" value="0.22"/>
+    <param name="inflation_radius" value="0.15"/>
     <param name="cost_radius" value="0.1"/>
     
     <param name="max_x" value="$(arg max_x)"/>

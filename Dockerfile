@@ -14,8 +14,7 @@ SHELL ["/bin/bash", "-c"]
 #install common pkg
 #-----------------------------
 RUN apt-get -y update
-RUN apt-get -y install git ssh python3-pip wget net-tools vim curl make build-essential lsb-release cmake
-
+RUN apt-get -y install git ssh python3-pip wget net-tools vim curl make build-essential lsb-release cmake python-is-python3
 
 #-----------------------------
 #install tmc-ros pkg
@@ -34,24 +33,7 @@ RUN echo -e "machine packages.hsr.io\nlogin hsr-user\npassword jD3k4G2e" >/etc/a
 RUN apt-get update -y
 RUN apt-get install -y ros-noetic-tmc-desktop-full
 
-
-RUN mkdir -p /catkin_ws/src
-WORKDIR /catkin_ws
-
-RUN echo "source /opt/ros/noetic/setup.sh" >> /.bashrc
-RUN cd /catkin_ws/src && . /opt/ros/noetic/setup.sh && catkin_init_workspace
-
-COPY ./follow_human /catkin_ws/src/follow_human
-COPY ./hsr_tools /catkin_ws/src/hsr_tools
-COPY ./hardware /catkin_ws/src/hardware
-COPY ./navigation /catkin_ws/src/navigation
-
-RUN cd /catkin_ws && . /opt/ros/noetic/setup.sh && catkin_make
-RUN echo "source ./catkin_ws/devel/setup.bash --extend" >> /.bashrc
-
-
-#source /opt/ros/noetic/setup.bash
-#setup tool merge -t src https://raw.githubusercontent.com/googlecartographer/cartographer_toyota_hsr/master/cartographer_toyota_hsr.rosinstall
+#install cartographer
 RUN mkdir -p /cartographer_ws/src
 WORKDIR /cartographer_ws
 
@@ -81,10 +63,25 @@ RUN cd /cartographer_ws/src/cartographer/ && \
 
 RUN chmod 775 /cartographer_ws/install_isolated/setup.bash && \
     echo "source /cartographer_ws/install_isolated/setup.bash --extend" >> /.bashrc && \
-    source install_isolated/setup.bash && \
+    source install_isolated/setup.bash 
+
+
+#make workspace and copy navigation
+RUN mkdir -p /catkin_ws/src
+WORKDIR /catkin_ws
+
+RUN echo "source /opt/ros/noetic/setup.sh" >> /.bashrc
+RUN cd /catkin_ws/src && . /opt/ros/noetic/setup.sh && catkin_init_workspace
+
+COPY ./follow_human /catkin_ws/src/follow_human
+COPY ./hsr_tools /catkin_ws/src/hsr_tools
+COPY ./hardware /catkin_ws/src/hardware
+COPY ./navigation /catkin_ws/src/navigation
+
+RUN cd /catkin_ws && . /opt/ros/noetic/setup.sh && catkin_make
+RUN echo "source /catkin_ws/devel/setup.bash --extend" >> /.bashrc && \
     source /.bashrc 
 
-COPY ./run.sh /
 
 COPY ./ros_entrypoint.sh /
 ENTRYPOINT ["/ros_entrypoint.sh"]
