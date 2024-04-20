@@ -15,12 +15,12 @@ omnibase = robot.get("omni_base")
 omni_base = nav_module("hsr")
 
 
-def callback(msg):
-    print(msg)
-    if msg.status == 3:
-        rospy.loginfo('success')
-    else: 
-        rospy.loginfo('retry')
+#def callback(msg):
+#    print(msg)
+#    if msg.status == 3:
+#       rospy.loginfo('success')
+#   else: 
+#        rospy.loginfo('retry')
 
 
 #omni_base.go_abs(2.0, 0.8, 0, 30,"pumas")
@@ -31,13 +31,13 @@ reconf_laser_obstacle_enable = reconf_client.Client('/tmc_map_merger/inputs/head
 reconf_depth_obstacle_enable = reconf_client.Client('/tmc_map_merger/inputs/base_scan')
 reconf_laser_obstacle_enable.update_configuration({"enable": True})
 reconf_depth_obstacle_enable.update_configuration({"enable": True})
-state = rospy.Subscriber('/navigation/status',Bool,callback)
-omni_base.go_abs(1, 0, 0, 30,"pumas")
+#state = rospy.Subscriber('/navigation/status',Bool,callback)
+#omni_base.go_abs(1, 0, 0, 30,"pumas")
 
 
 # OBSTACLE RECONFIGURE SETTINGS
 reconf_depth_obstacle_enable.update_configuration({"enable": False})
-#omni_base.go_rel(0, 0, 2.0, 30, "pumas") #TODO
-#omni_base.go_abs(1, 0, 2.0, 30, "pumas")
-#omni_base.go_abs(1, 0, 2.0, 30, "pumas")
+omni_base.go_rel(0, 0, 2.0, 30, "pumas") #TODO
+omni_base.go_rel(0, 0, 2.0, 30, "pumas")
+omni_base.go_rel(0, 0, 2.0, 30, "pumas")
 reconf_depth_obstacle_enable.update_configuration({"enable": True})

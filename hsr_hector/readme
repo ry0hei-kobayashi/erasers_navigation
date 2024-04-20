@@ -1,0 +1,25 @@
+地図を作るためのpackage(パラメータ書くの面倒なので...)
+
+How to do 
+$ rosrun hsr_hector make_map.sh
+or
+$ source /opt/tmc/ros/indigo/setup.bash 
+$ rosnode kill /pose_integrator 
+$ roslaunch hsr_hector hsr_hector.launch 
+・ 
+・#地図を作るためにHSR移動中 
+・↓ある程度できたら 
+$ rosrun map_server map_saver
+
+そしたらmap.yamlとmap.pgmができてるはず。
+
+そしてHSRの内部の/etc/opt/tmc/robot/conf.d/{new_directory}に置く 
+/etc/opt/tmc/robot/docker.hsrb.user
+のMAP_PATHに{new_directory}までのパスを書く。 
+$ sudo systemctl restart docker.hsrb.robot
+「HSR スタート」と言ったら緊急停止を押して、解除... 
+多分地図が変わってる。
+
+依存関係
+hector_mapping
+(tmcのパッケージの依存になってるhazu)
