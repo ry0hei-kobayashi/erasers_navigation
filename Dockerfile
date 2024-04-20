@@ -38,7 +38,7 @@ RUN apt-get install -y ros-noetic-tmc-desktop-full
 RUN mkdir -p /catkin_ws/src
 WORKDIR /catkin_ws
 
-RUN echo "source /opt/ros/noetic/setup.sh" >> .bashrc
+RUN echo "source /opt/ros/noetic/setup.sh" >> /.bashrc
 RUN cd /catkin_ws/src && . /opt/ros/noetic/setup.sh && catkin_init_workspace
 
 COPY ./follow_human /catkin_ws/src/follow_human
@@ -46,36 +46,47 @@ COPY ./hsr_tools /catkin_ws/src/hsr_tools
 COPY ./hardware /catkin_ws/src/hardware
 COPY ./navigation /catkin_ws/src/navigation
 
-#RUN mkdir -p /cartographer_ws/src
-#WORKDIR /cartographer_ws
+RUN cd /catkin_ws && . /opt/ros/noetic/setup.sh && catkin_make
+RUN echo "source ./catkin_ws/devel/setup.bash --extend" >> /.bashrc
 
-RUN apt-get install -y python3-wstool python3-rosdep ninja-build stow python3-catkin-tools
+
+#source /opt/ros/noetic/setup.bash
+#setup tool merge -t src https://raw.githubusercontent.com/googlecartographer/cartographer_toyota_hsr/master/cartographer_toyota_hsr.rosinstall
+RUN mkdir -p /cartographer_ws/src
+WORKDIR /cartographer_ws
+
+RUN apt-get install -y python3-wstool python3-rosdep ninja-build stow
 RUN pip install jinja2==3.0.3
-RUN cd /catkin_ws && . /opt/ros/noetic/setup.bash && \
+RUN cd /cartographer_ws && . /opt/ros/noetic/setup.bash && \
     wstool init src && \
     wstool update -t src && \
     wstool merge -t src https://raw.githubusercontent.com/googlecartographer/cartographer_toyota_hsr/master/cartographer_toyota_hsr.rosinstall && \
     wstool update -t src
 
 
-RUN cd /catkin_ws/src/cartographer/scripts && \
+RUN cd /cartographer_ws/src/cartographer/scripts && \
     ./install_abseil.sh && \
     sleep 1 && \
     cd /usr/local/stow && \
     stow absl
 
     # Install deb dependencies.
-RUN cd /catkin_ws/src/cartographer/ && \
+RUN cd /cartographer_ws/src/cartographer/ && \
     sed -i '/absl/d' package.xml && \
-    cd /catkin_ws && \
+    cd /cartographer_ws && \
     rosdep update && \
-    rosdep install --from-paths src --ignore-src -r --rosdistro=noetic -y 
+    rosdep install --from-paths src --ignore-src -r --rosdistro=noetic -y && \
+    . /opt/ros/noetic/setup.bash && \
+    catkin_make_isolated --install --use-ninja
 
-RUN . /opt/ros/noetic/setup.bash  &&  \ 
-    catkin build
+RUN chmod 775 /cartographer_ws/install_isolated/setup.bash && \
+    echo "source /cartographer_ws/install_isolated/setup.bash --extend" >> /.bashrc && \
+    source install_isolated/setup.bash && \
+    source /.bashrc 
 
 COPY ./run.sh /
 
 COPY ./ros_entrypoint.sh /
 ENTRYPOINT ["/ros_entrypoint.sh"]
-WORKDIR /catkin_ws
+
+WORKDIR /
