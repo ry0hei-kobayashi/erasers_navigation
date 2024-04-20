@@ -48,15 +48,15 @@
     <node name="arm" pkg="arm" type="arm_node" output="screen"/>
   </group>
   
-  <node name="map_server_bypass" pkg="map_server_bypass" type="map_server_bypass_node" output="screen">
+  <node name="map_server_bypass" pkg="map_server_bypass" type="map_server_bypass_node" respawn="true"  output="screen">
     <param name="occupied_threshold" value="70"/>
   </node>
   
-  <node name="path_planner" pkg="path_planner" type="path_planner_node" output="screen">
+  <node name="path_planner" pkg="path_planner" type="path_planner_node"  respawn="true" output="screen">
     <param name="diagonal_paths" value="False"/>
   </node>
   
-  <node name="simple_move"  pkg="simple_move"  type="simple_move_node"  output="screen">
+  <node name="simple_move"  pkg="simple_move"  type="simple_move_node"  respawn="true"  output="screen">
     <param name="max_linear_speed" value="0.8"/>
     <param name="max_angular_speed" value="1.25"/>
     <param name="control_alpha" value="0.2"/>
@@ -65,7 +65,7 @@
     <param name="cmd_vel_name" value="$(arg cmd_vel_name)"/>
   </node>
   
-  <node name="obs_detector"  pkg="obstacle_detector"  type="obs_detect_node"  output="screen">
+  <node name="obs_detector"  pkg="obstacle_detector"  type="obs_detect_node"  respawn="true"  output="screen">
     <param name="laser_scan_topic" value="$(arg laser_scan_topic)"/>
     <param name="point_cloud_topic" value="$(arg point_cloud_topic)"/>
     <param name="point_cloud_topic2" value="$(arg point_cloud_topic2)"/>
@@ -84,7 +84,7 @@
     
     <param name="obs_detector_debug" value="False"/>
     
-    <param name="pot_fields_k_rej" value="0.25"/>
+    <param name="pot_fields_k_rej" value="0.15"/>
     
     <param name="max_x" value="$(arg max_x)"/>
     <param name="min_x" value="$(arg min_x)"/>
@@ -97,7 +97,7 @@
   <arg name="topic_name" default="/navigation/obs_detector/enable" />
   <node pkg="rostopic" type="rostopic" name="rostopic_pub_node" output="screen" args="pub $(arg topic_name) std_msgs/Bool 'data: true'" />
   
-  <node name="map_augmenter"  pkg="map_augmenter"  type="map_augmenter_node"  output="screen">
+  <node name="map_augmenter"  pkg="map_augmenter"  type="map_augmenter_node"   respawn="true" output="screen">
     <param name="laser_scan_topic" value="$(arg laser_scan_topic)"/>
     <param name="point_cloud_topic" value="$(arg point_cloud_topic)"/>
     <param name="point_cloud_topic2" value="$(arg point_cloud_topic2)"/>
@@ -111,7 +111,7 @@
     
     <param name="cloud_downsampling" value="$(arg cloud_downsampling)"/>
     
-    <param name="inflation_radius" value="0.15"/>
+    <param name="inflation_radius" value="0.12"/>
     <param name="cost_radius" value="0.1"/>
     
     <param name="max_x" value="$(arg max_x)"/>
@@ -123,12 +123,12 @@
 
   </node>
   
-  <node name="prohibition_map_server" pkg="map_server" type="map_server" output="screen" args="$(arg prohibition_map_file)">
+  <node name="prohibition_map_server" pkg="map_server" type="map_server" respawn="true"  output="screen" args="$(arg prohibition_map_file)">
     <remap from="/static_map" to="/prohibition_map"/>
     <remap from="/map" to="/prohibition_layer_map"/>
   </node>
   
-  <node name="mvn_pln"  pkg="mvn_pln"  type="mvn_pln_node"  output="screen">
+  <node name="mvn_pln"  pkg="mvn_pln"  type="mvn_pln_node" respawn="true" output="screen">
     <remap from="/nav_control/goal" to="/move_base_simple/goal"/>
     <param name="patience" value="True"/>
   </node>
