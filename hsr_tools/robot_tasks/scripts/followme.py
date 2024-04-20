@@ -62,7 +62,7 @@ def create_sm():
         ##########
         #START: FOLLOW PERSON
         ##########
-        smach.StateMachine.add('FOLLOWPERSON', FollowPerson(robot),
+        smach.StateMachine.add('FOLLOWPERSON', FollowPerson(),
                                transitions = {'success': 'MOVE2STANDBY',
                                               'failure': 'failure',
                                               'timeout': 'MOVE2TIMEOUT'})

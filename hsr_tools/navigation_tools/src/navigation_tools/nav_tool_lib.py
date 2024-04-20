@@ -1,14 +1,17 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import math
 
 import rospy
 import hsrb_interface
+#from hsrlib.hsrif import  HSRInterfaces
 import tf
 from std_msgs.msg import Float32MultiArray, Bool, Empty
 from geometry_msgs.msg import Pose, Vector3, Quaternion, PoseStamped
 from actionlib_msgs.msg import GoalStatus
+
+
 
 global globalGoalReached
 global goalReached
@@ -54,6 +57,7 @@ class nav_module():
         self.navigation_setter = select
         self.goal = Float32MultiArray()
         omnibase = 0
+        #hsrif = HSRInterfaces()
         robot = hsrb_interface.Robot()
         omnibase = robot.get("omni_base")
         whole_body = robot.get("whole_body")
